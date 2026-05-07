@@ -2,7 +2,7 @@ import requests
 
 def obtener_datos():
     """Descarga y retorna los datos JSON de la API."""
-    url = "https://thesimpsonsapi.com/api"
+    url = "https://thesimpsonsapi.com/api/characters"
     respuesta = requests.get(url)
     datos = respuesta.json()
     return datos
