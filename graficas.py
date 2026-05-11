@@ -99,3 +99,51 @@ def grafica_edades(rangos):
                 
     plt.show()
 
+def contar_ocupaciones(datos_limpios):
+    conteo = {}
+
+    for personaje in datos_limpios:
+        ocupacion = personaje.get("ocupacion", "Other")
+
+        if ocupacion is None:
+            ocupacion = "Other"
+
+        o = ocupacion.lower()
+
+        if "student" in o:
+            categoria = "Student"
+        elif "teacher" in o or "principal" in o:
+            categoria = "Education"
+        elif "owner" in o:
+            categoria = "Owner"
+        elif "employee" in o:
+            categoria = "Employee"
+        elif "unemployed" in o:
+            categoria = "Unemployed"
+        else:
+            categoria = "Other"
+
+        conteo[categoria] = conteo.get(categoria, 0) + 1
+
+    return conteo
+
+def graficar_ocupaciones(conteo):
+    categorias = list(conteo.keys())
+    valores = list(conteo.values())
+
+    fig, ax = plt.subplots()
+
+    ax.plot(categorias, valores, marker="o", label="Ocupaciones")
+
+    ax.legend()
+
+    ax.set_title("Categorias de ocupaciones en Los Simpson")
+    ax.set_xlabel("Categoria")
+    ax.set_ylabel("Cantidad")
+
+    plt.xticks(rotation=30)
+
+    plt.tight_layout()
+
+    plt.savefig("grafica3.png")
+    plt.show()
