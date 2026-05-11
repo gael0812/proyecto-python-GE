@@ -4,10 +4,10 @@ def limpiar_datos(datos):
     for personaje in datos:
         personaje_limpio = {
             "nombre": personaje.get("name", "sin nombre"),
-            "age": personaje.get("age", "desconocida")
+            "age": personaje.get("age", "desconocida"),
             "genero": personaje.get("gender", "Desconocido"),
-            "ocupacion": personaje.get("ocupacion", "Desconocida"),
-            "imagen": personaje.get("imagen", None)
+            "ocupacion": personaje.get("occupation", "Desconocida"),
+            "imagen": personaje.get("portrait_path", None)
             }
         if personaje_limpio["nombre"]:
             datos_limpios.append(personaje_limpio)
