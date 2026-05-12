@@ -13,3 +13,5 @@ URL:"https://thesimpsonsapi.com/api/characters?page=1"
 
 ¿Cómo ejecutarlo?
 
+GRAFICAS
+1. La primera grafica tenemos es una grafica de pastel,donde se muestra los generos que hay en LOS SIMPSON,vemos que hay 
