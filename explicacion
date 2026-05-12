@@ -1,0 +1,367 @@
+# ==========================================
+# IMPORTAR LIBRERÍAS
+# ==========================================
+
+# Importa la librería requests
+# Sirve para hacer solicitudes a páginas web o APIs
+import requests
+
+# Importa matplotlib para crear gráficas
+# pyplot contiene funciones para dibujar
+# "plt" es un alias corto
+import matplotlib.pyplot as plt
+
+
+# ==========================================
+# FUNCIÓN PARA OBTENER DATOS DE LA API
+# ==========================================
+
+def obtener_datos():
+
+    # Docstring: explica qué hace la función
+    """Descarga y retorna los datos JSON de la API."""
+
+    # URL de la API de personajes de Los Simpson
+    url = "https://thesimpsonsapi.com/api/characters?page=1"
+
+    # Hace una solicitud GET a la API
+    respuesta = requests.get(url)
+
+    # Convierte la respuesta JSON a diccionario Python
+    datos = respuesta.json()
+
+    # Retorna la lista dentro de "results"
+    # Si no existe, devuelve lista vacía []
+    return datos.get("results", [])
+
+
+# ==========================================
+# EJECUCIÓN PRINCIPAL
+# ==========================================
+
+# Este bloque solo se ejecuta si el archivo
+# se ejecuta directamente
+if __name__ == "__main__":
+
+    # Llama la función y obtiene los datos
+    datos = obtener_datos()
+
+    # Imprime los datos completos
+    print(datos)
+
+
+# ==========================================
+# FUNCIÓN PARA LIMPIAR DATOS
+# ==========================================
+
+def limpiar_datos(datos):
+
+    # Lista vacía para guardar datos limpios
+    datos_limpios = []
+
+    # Recorre cada personaje
+    for personaje in datos:
+
+        # Crea un nuevo diccionario con datos importantes
+        personaje_limpio = {
+
+            # Obtiene el nombre
+            # Si no existe usa "sin nombre"
+            "nombre": personaje.get("name", "sin nombre"),
+
+            # Obtiene la edad
+            "age": personaje.get("age", "desconocida"),
+
+            # Obtiene el género
+            "genero": personaje.get("gender", "Desconocido"),
+
+            # Obtiene la ocupación
+            "ocupacion": personaje.get("occupation", "Desconocida"),
+
+            # Obtiene ruta de imagen
+            # Si no existe devuelve None
+            "imagen": personaje.get("portrait_path", None)
+        }
+
+        # Verifica que sí tenga nombre
+        if personaje_limpio["nombre"]:
+
+            # Agrega personaje a lista limpia
+            datos_limpios.append(personaje_limpio)
+
+    # Retorna lista limpia
+    return datos_limpios
+
+
+# ==========================================
+# FUNCIÓN PARA CONTAR GÉNEROS
+# ==========================================
+
+def contar_genero(personajes):
+
+    # Contadores
+    hombres = 0
+    mujeres = 0
+
+    # Recorre personajes
+    for personaje in personajes:
+
+        # Obtiene género
+        genero = personaje.get("genero", "")
+
+        # Si es hombre suma 1
+        if genero == "Male":
+            hombres += 1
+
+        # Si es mujer suma 1
+        elif genero == "Female":
+            mujeres += 1
+
+    # Retorna ambos valores
+    return hombres, mujeres
+
+
+# ==========================================
+# FUNCIÓN PARA GRAFICAR GÉNERO
+# ==========================================
+
+def grafica_genero(hombres, mujeres):
+
+    # Calcula total
+    total = hombres + mujeres
+
+    # Si no hay datos
+    if total == 0:
+        print("No hay datos para graficar")
+        return
+
+    # Crea figura
+    plt.figure()
+
+    # Crea gráfica circular
+    plt.pie(
+        [hombres, mujeres],                 # Datos
+        labels=["Hombres", "Mujeres"],     # Etiquetas
+        autopct="%1.1f%%",                 # Porcentajes
+        colors=["skyblue", "pink"]         # Colores
+    )
+
+    # Título de gráfica
+    plt.title("Género de personajes de Los Simpson")
+
+    # Guarda gráfica
+    plt.savefig("grafica1.png")
+
+    # Muestra gráfica
+    plt.show()
+
+
+# ==========================================
+# FUNCIÓN PARA CONTAR EDADES
+# ==========================================
+
+def contar_edades(datos):
+
+    # Diccionario de rangos
+    rangos = {
+        "0-10": 0,
+        "11-20": 0,
+        "21-30": 0,
+        "31-40": 0,
+        "41-50": 0,
+        "51+": 0
+    }
+
+    # Recorre personajes
+    for personaje in datos:
+
+        # Obtiene edad
+        edad = personaje.get("age", 0)
+
+        # Intenta convertir edad a entero
+        try:
+            edad = int(edad)
+
+        # Si falla ignora personaje
+        except:
+            continue
+
+        # Clasifica edades
+        if edad <= 10:
+            rangos["0-10"] += 1
+
+        elif edad <= 20:
+            rangos["11-20"] += 1
+
+        elif edad <= 30:
+            rangos["21-30"] += 1
+
+        elif edad <= 40:
+            rangos["31-40"] += 1
+
+        elif edad <= 50:
+            rangos["41-50"] += 1
+
+        else:
+            rangos["51+"] += 1
+
+    # Retorna rangos
+    return rangos
+
+
+# ==========================================
+# FUNCIÓN PARA GRAFICAR EDADES
+# ==========================================
+
+def grafica_edades(rangos):
+
+    # Obtiene valores del diccionario
+    valores = list(rangos.values())
+
+    # Si no hay datos
+    if sum(valores) == 0:
+        print("No hay datos de edades para graficar")
+        return
+
+    # Crea figura
+    plt.figure()
+
+    # Gráfica de barras
+    plt.bar(
+        rangos.keys(),     # Eje X
+        valores,           # Eje Y
+        color="orange"
+    )
+
+    # Título
+    plt.title("Edades de personajes de Los Simpson")
+
+    # Texto eje X
+    plt.xlabel("Rango de edad")
+
+    # Texto eje Y
+    plt.ylabel("Cantidad")
+
+    # Guarda imagen
+    plt.savefig("grafica2.png")
+
+    # Muestra gráfica
+    plt.show()
+
+
+# ==========================================
+# FUNCIÓN PARA CONTAR OCUPACIONES
+# ==========================================
+
+def contar_ocupaciones(datos_limpios):
+
+    # Diccionario vacío
+    conteo = {}
+
+    # Recorre personajes
+    for personaje in datos_limpios:
+
+        # Obtiene ocupación
+        ocupacion = personaje.get("ocupacion", "Other")
+
+        # Si es None
+        if ocupacion is None:
+            ocupacion = "Other"
+
+        # Convierte a minúsculas
+        o = ocupacion.lower()
+
+        # Clasifica ocupaciones
+        if "student" in o:
+            categoria = "Student"
+
+        elif "teacher" in o or "principal" in o:
+            categoria = "Education"
+
+        elif "owner" in o:
+            categoria = "Owner"
+
+        elif "employee" in o:
+            categoria = "Employee"
+
+        elif "unemployed" in o:
+            categoria = "Unemployed"
+
+        else:
+            categoria = "Other"
+
+        # Suma 1 a la categoría
+        conteo[categoria] = conteo.get(categoria, 0) + 1
+
+    # Retorna conteo
+    return conteo
+
+
+# ==========================================
+# FUNCIÓN PARA GRAFICAR OCUPACIONES
+# ==========================================
+
+def graficar_ocupaciones(conteo):
+
+    # Obtiene categorías
+    categorias = list(conteo.keys())
+
+    # Obtiene valores
+    valores = list(conteo.values())
+
+    # Crea figura y ejes
+    fig, ax = plt.subplots()
+
+    # Crea gráfica de líneas
+    ax.plot(
+        categorias,
+        valores,
+        marker="o",
+        label="Ocupaciones"
+    )
+
+    # Muestra leyenda
+    ax.legend()
+
+    # Título
+    ax.set_title("Categorias de ocupaciones en Los Simpson")
+
+    # Texto eje X
+    ax.set_xlabel("Categoria")
+
+    # Texto eje Y
+    ax.set_ylabel("Cantidad")
+
+    # Rota etiquetas
+    plt.xticks(rotation=30)
+
+    # Ajusta espacios automáticamente
+    plt.tight_layout()
+
+    # Guarda gráfica
+    plt.savefig("grafica3.png")
+
+    # Muestra gráfica
+    plt.show()
+
+
+# ==========================================
+# PROGRAMA PRINCIPAL
+# ==========================================
+
+if __name__ == "__main__":
+
+    # Obtiene datos de la API
+    datos = obtener_datos()
+
+    # Limpia los datos
+    datos_limpios = limpiar_datos(datos)
+
+    # Cuenta ocupaciones
+    conteo_ocupaciones = contar_ocupaciones(datos_limpios)
+
+    # Imprime resultados
+    print(conteo_ocupaciones)
+
+    # Genera gráfica
+    graficar_ocupaciones(conteo_ocupaciones)
