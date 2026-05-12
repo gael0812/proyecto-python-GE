@@ -6,10 +6,9 @@ def obtener_datos():
     respuesta = requests.get(url)
     datos = respuesta.json()
     return datos.get("results", [])
+     # Obtiene la lista de personajes dentro de la clave "results"
+    # Si no existe, devuelve una lista vacía
 
-if __name__ == "__main__":
-    datos = obtener_datos()
-    print(datos)
 
 def limpiar_datos(datos):
     datos_limpios = []
@@ -21,8 +20,182 @@ def limpiar_datos(datos):
             "genero": personaje.get("gender", "Desconocido"),
             "ocupacion": personaje.get("occupation", "Desconocida"),
             "imagen": personaje.get("portrait_path", None)
+            # Obtiene la ruta de la imagen
             }
         if personaje_limpio["nombre"]:
             datos_limpios.append(personaje_limpio)
 
     return datos_limpios
+
+import matplotlib.pyplot as plt
+
+def contar_genero(personajes):
+
+    hombres = 0
+    mujeres = 0
+
+    for personaje in personajes:
+
+        genero = personaje.get("genero", "")
+
+        if genero == "Male":
+            hombres += 1
+
+        elif genero == "Female":
+            mujeres += 1
+
+    return hombres, mujeres
+
+
+def grafica_genero(hombres, mujeres):
+
+    total = hombres + mujeres
+
+    if total == 0:
+        print("No hay datos para graficar")
+        return
+
+    plt.figure()
+
+    plt.pie(
+        [hombres, mujeres],
+        labels=["Hombres", "Mujeres"],
+        autopct="%1.1f%%",
+        colors=["skyblue", "pink"]
+    )
+     # Crea una gráfica de pastel
+    # autopct muestra porcentajes automáticamente
+
+    plt.title("Género de personajes de Los Simpson")
+
+    plt.savefig("grafica1.png")
+
+    plt.show()
+
+
+def contar_edades(datos):
+
+    rangos = {
+        "0-10": 0,
+        "11-20": 0,
+        "21-30": 0,
+        "31-40": 0,
+        "41-50": 0,
+        "51+": 0
+    }
+
+    for personaje in datos:
+
+        edad = personaje.get("age", 0)
+
+        try:
+            edad = int(edad)
+        except:
+            continue
+        # Si la edad no puede convertirse a numero entero, ignora ese personaje
+
+        if edad <= 10:
+            rangos["0-10"] += 1
+        elif edad <= 20:
+            rangos["11-20"] += 1
+        elif edad <= 30:
+            rangos["21-30"] += 1
+        elif edad <= 40:
+            rangos["31-40"] += 1
+        elif edad <= 50:
+            rangos["41-50"] += 1
+        else:
+            rangos["51+"] += 1
+
+    return rangos
+
+def grafica_edades(rangos):
+
+    valores = list(rangos.values())
+
+    if sum(valores) == 0:
+        print("No hay datos de edades para graficar")
+        return
+
+    plt.figure()
+
+    plt.bar(
+        rangos.keys(),
+        valores,
+        color="orange"
+    )
+
+    plt.title("Edades de personajes de Los Simpson")
+    plt.xlabel("Rango de edad")
+    plt.ylabel("Cantidad")
+
+    plt.savefig("grafica2.png")
+                
+    plt.show()
+
+def contar_ocupaciones(datos_limpios):
+    conteo = {}
+
+    for personaje in datos_limpios:
+        ocupacion = personaje.get("ocupacion", "Other")
+
+        if ocupacion is None:
+            ocupacion = "Other"
+
+        o = ocupacion.lower()
+
+        if "student" in o:
+            categoria = "Student"
+        elif "teacher" in o or "principal" in o:
+            categoria = "Education"
+        elif "owner" in o:
+            categoria = "Owner"
+        elif "employee" in o:
+            categoria = "Employee"
+        elif "unemployed" in o:
+            categoria = "Unemployed"
+        else:
+            categoria = "Other"
+
+        conteo[categoria] = conteo.get(categoria, 0) + 1
+
+    return conteo
+
+def graficar_ocupaciones(conteo):
+    categorias = list(conteo.keys())
+    valores = list(conteo.values())
+
+    fig, ax = plt.subplots()
+
+    ax.plot(categorias, valores, marker="o", label="Ocupaciones")
+
+    ax.legend()
+
+    ax.set_title("Categorias de ocupaciones en Los Simpson")
+    ax.set_xlabel("Categoria")
+    ax.set_ylabel("Cantidad")
+
+    plt.xticks(rotation=30)
+
+    plt.tight_layout()
+
+    plt.savefig("grafica3.png")
+    plt.show()
+
+if __name__ == "__main__":
+    datos = obtener_datos()
+#descarga los datos de la api
+    datos_limpios = limpiar_datos(datos)
+#limpia los datos obtenidos
+    hombres, mujeres = contar_genero(datos_limpios)
+#cuenta hombres y mujeres
+    grafica_genero(hombres, mujeres)
+#genera grafica de genero
+    rangos = contar_edades(datos_limpios)
+#genera rangos para la grafica de las edades
+    grafica_edades(rangos)
+#grafica las edades con los rangos usados
+    ocupaciones = contar_ocupaciones(datos_limpios)
+#divide las ocupaciones en categorias
+    graficar_ocupaciones(ocupaciones)
+#grafica las categorias
