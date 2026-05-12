@@ -14,4 +14,5 @@ URL:"https://thesimpsonsapi.com/api/characters?page=1"
 ¿Cómo ejecutarlo?
 
 GRAFICAS
-1. La primera grafica tenemos es una grafica de pastel,donde se muestra los generos que hay en LOS SIMPSON,vemos que hay 
+1. La primera grafica tenemos es una grafica de pastel,donde se muestra los generos que hay en LOS SIMPSON,vemos que hay 65% de personajes del genero masculino y 35% del genro femenino.
+2. 
