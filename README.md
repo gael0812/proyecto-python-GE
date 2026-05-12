@@ -12,7 +12,10 @@ API utilizada : Los Simposon
 URL:"https://thesimpsonsapi.com/api/characters?page=1"
 
 ¿Cómo ejecutarlo?
+1. Instalar dependencias: pip install requests matplotlib 
+2. Ejecutar: python main.py 
 
 GRAFICAS
 1. La primera grafica tenemos es una grafica de pastel,donde se muestra los generos que hay en LOS SIMPSON,vemos que hay 65% de personajes del genero masculino y 35% del genro femenino.
-2. 
+2. Observamos en la segunda,una grafica de barras que se encarga de mostrar el rango de edades de los personajes donde el rango de edades es de [0 años - 51 años]
+3. Ahora en la tercera grafica de 
